@@ -12,3 +12,9 @@ a975b8,::1,GET,http://localhost:8080/shop/products/list?category_id=2,1716186013
 b9f93c,::1,GET,http://localhost:8080/shop/block/search_product,1716186014,5a603a,200
 220203,::1,GET,http://localhost:8080/shop/block/search_product,1716186015,5a603a,200
 5a603a,::1,GET,http://localhost:8080/shop/products/list?category_id=5,1716186015,,200
+309cda,::1,GET,http://localhost:8080/shop/block/search_product,1716187008,7d2167,200
+823cfe,::1,GET,http://localhost:8080/shop/block/search_product,1716187009,7d2167,200
+10505a,::1,GET,http://localhost:8080/shop/block/search_product,1716187009,bdbf84,200
+a51df9,::1,GET,http://localhost:8080/shop/block/search_product,1716187010,bdbf84,200
+7d2167,::1,GET,http://localhost:8080/shop/products/list?category_id=5,1716187009,,200
+bdbf84,::1,GET,http://localhost:8080/shop/,1716187010,,200
