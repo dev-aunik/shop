@@ -12,3 +12,17 @@ a975b8,::1,GET,http://localhost:8080/shop/products/list?category_id=2,1716186013
 b9f93c,::1,GET,http://localhost:8080/shop/block/search_product,1716186014,5a603a,200
 220203,::1,GET,http://localhost:8080/shop/block/search_product,1716186015,5a603a,200
 5a603a,::1,GET,http://localhost:8080/shop/products/list?category_id=5,1716186015,,200
+e712cb,::1,GET,http://localhost:8080/shop/block/search_product,1716196852,c269c4,200
+94405f,::1,GET,http://localhost:8080/shop/block/search_product,1716196853,c269c4,200
+c269c4,::1,GET,http://localhost:8080/shop/,1716196853,,200
+ee4cb6,::1,GET,http://localhost:8080/shop/admin,1716197160,,301
+f7b25d,::1,GET,http://localhost:8080/shop/admin/,1716197160,,302
+e420f0,::1,GET,http://localhost:8080/shop/admin/login,1716197161,,200
+40d8a0,::1,POST,http://localhost:8080/shop/admin/login,1716197217,,302
+b20d00,::1,GET,http://localhost:8080/shop/admin/,1716197219,,200
+05109d,::1,GET,http://localhost:8080/shop/admin/sale_chart,1716197221,,200
+256567,::1,GET,http://localhost:8080/shop/admin/,1716197227,,200
+06ba57,::1,GET,http://localhost:8080/shop/admin/sale_chart,1716197228,,200
+bfbedd,::1,GET,http://localhost:8080/shop/api/customer/2,1716197925,9172b6,404
+9172b6,::1,GET,http://localhost:8080/shop/api/customer/2,1716197925,,404
+ebb821,::1,GET,http://localhost:8080/shop/api/customers_list,1716197936,,200
