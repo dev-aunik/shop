@@ -1,0 +1,10 @@
+/* カスタマイズ用CSS */
+.line-clamp-1{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+}
+.bg-light-custom{
+      background: #F8F8F8;
+}
