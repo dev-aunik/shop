@@ -636,30 +636,33 @@ class ShoppingController extends AbstractShoppingController
                                 $item_category_id = $item_category->toArray()['category_id'];
                                 $price = $order_item->toArray()['price'];
                                 $quantity = $order_item->toArray()['quantity'];
+
+                                $payment = $order_item->toArray()['Order']['Payment']->toArray();
+
                                 $product_id = $order_item->toArray()['Product']->toArray()['id'];
-                                $order_details[$product_id] = [
+                                $order_detail = [
+                                    'email' => $this->getUser()['email'],
+                                    'order_id' => $Order->getId(),
+                                    'shop_item_id' => $product_id,
                                     'category_id' => $item_category_id,
                                     'price' => $price * $quantity,
                                     'quantity' => $quantity,
+                                    'payment_id' => $payment['id'],
+                                    'payment_date' => $payment['create_date'],
                                 ];
+
+                                array_push($order_details, $order_detail);
                             }
                         }
                     }
                 }
             }
 
+            $json_order_details = json_encode($order_details);
+
             if (isset($this->getUser()['email'])) {
-                $data = [
-                    'email' => $this->getUser()['email'],
-                    'order_id' => $Order->getId(),
-                    'order_details' => $order_details,
-                ];
-
-
-                $postFields = http_build_query($data);
-
                 $curl = curl_init();
-                curl_setopt_array($curl, array(
+                curl_setopt_array($curl, [
                     CURLOPT_URL => 'http://127.0.0.1:8000/api/users_tickets/store',
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
@@ -668,43 +671,19 @@ class ShoppingController extends AbstractShoppingController
                     CURLOPT_FOLLOWLOCATION => true,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => $postFields
-                ));
+                    CURLOPT_POSTFIELDS => $json_order_details,
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen($json_order_details),
+                    ],
+                ]);
 
                 $response = curl_exec($curl);
                 curl_close($curl);
+                // dd($response);
             }
 
-            // if (isset($this->getUser()['email'])) {
-            //     $data = [
-            //         'user_email' => $this->getUser()['email'],
-            //         'order_id' => $Order->getId(),
-            //         'order_details' => $order_details,
-            //     ];
-            //     $curl = curl_init();
-            //     curl_setopt_array($curl, array(
-            //         CURLOPT_URL => 'http://127.0.0.1:8000/api/users_tickets/store',
-            //         CURLOPT_RETURNTRANSFER => true,
-            //         CURLOPT_ENCODING => '',
-            //         CURLOPT_MAXREDIRS => 10,
-            //         CURLOPT_TIMEOUT => 0,
-            //         CURLOPT_FOLLOWLOCATION => true,
-            //         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            //         CURLOPT_CUSTOMREQUEST => 'POST',
-            //         CURLOPT_POSTFIELDS => $data
-            //     ));
-            //     $response = curl_exec($curl);
-            //     curl_close($curl);
-            //     dd($data);
-            // }
 
-
-            // dd($Order['OrderItems']->toArray());
-
-            // foreach ($item_category_ids as $key => $item_category_id) {
-            //     if ($item_category_id == 1) {
-            //     }
-            // }
             $this->mailService->sendOrderMail($Order);
             $this->entityManager->flush();
 
