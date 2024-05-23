@@ -271,7 +271,6 @@ class ProductController extends AbstractController
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
         $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         try {
-
             $productName = $request->get('product_name');
             $saleTypeId = $request->get('sale_type_id', 2);
             $productImages = $request->files->all('product_images');
@@ -543,6 +542,44 @@ class ProductController extends AbstractController
                 ->where('product_class_id IN (SELECT id FROM dtb_product_class WHERE product_id = :id)')
                 ->setParameter('id', $id);
             $relatedDeletedStock = $relatedQueryBuilderStock->execute();
+
+            // Delete related records from dtb_product_tag
+            $relatedQueryBuilderTag = $this->connection()->createQueryBuilder();
+            $relatedQueryBuilderTag
+                ->delete('dtb_product_tag')
+                ->where('product_id = :id')
+                ->setParameter('id', $id);
+            $relatedDeletedTag = $relatedQueryBuilderTag->execute();
+
+            // Fetch cart_ids related to the product
+            $cartIdsQueryBuilder = $this->connection()->createQueryBuilder();
+            $cartIds = $cartIdsQueryBuilder
+                ->select('DISTINCT cart_id')
+                ->from('dtb_cart_item')
+                ->where('product_class_id IN (SELECT id FROM dtb_product_class WHERE product_id = :id)')
+                ->setParameter('id', $id)
+                ->execute()
+                ->fetchAll();
+
+            // Delete related records from dtb_cart_item
+            $relatedQueryBuilderCartItem = $this->connection()->createQueryBuilder();
+            $relatedQueryBuilderCartItem
+                ->delete('dtb_cart_item')
+                ->where('product_class_id IN (SELECT id FROM dtb_product_class WHERE product_id = :id)')
+                ->setParameter('id', $id);
+            $relatedDeletedCartItem = $relatedQueryBuilderCartItem->execute();
+
+            // Delete related records from dtb_cart
+            foreach($cartIds as $key=>$cartId){
+                if(isset($cartId['cart_id'])){
+                    $relatedQueryBuilderCart = $this->connection()->createQueryBuilder();
+                    $relatedQueryBuilderCart
+                        ->delete('dtb_cart')
+                        ->where('id = :id')
+                        ->setParameter('id', $cartId['cart_id']);
+                    $relatedDeletedCart = $relatedQueryBuilderCart->execute();
+                }
+            }
 
             // Delete related records from dtb_product_class
             $relatedQueryBuilderClass = $this->connection()->createQueryBuilder();
