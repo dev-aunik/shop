@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'ec-cube/ec-cube',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '9f87b2b779a8179dc86ca5ae04ff870c1288a8b1',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -380,9 +380,9 @@
             'dev_requirement' => false,
         ),
         'ec-cube/ec-cube' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '9f87b2b779a8179dc86ca5ae04ff870c1288a8b1',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -464,9 +464,9 @@
             ),
         ),
         'friendsofphp/php-cs-fixer' => array(
-            'pretty_version' => 'v3.57.1',
-            'version' => '3.57.1.0',
-            'reference' => '3f7efe667a8c9818aacceee478add7c0fc24cb21',
+            'pretty_version' => 'v3.57.2',
+            'version' => '3.57.2.0',
+            'reference' => '22f7f3145606df92b02fb1bd22c30abfce956d3c',
             'type' => 'application',
             'install_path' => __DIR__ . '/../friendsofphp/php-cs-fixer',
             'aliases' => array(),
@@ -829,8 +829,8 @@
         'psr/log-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0|2.0',
-                1 => '1.0.0 || 2.0.0 || 3.0.0',
+                0 => '1.0.0 || 2.0.0 || 3.0.0',
+                1 => '1.0|2.0',
             ),
         ),
         'psr/simple-cache' => array(
