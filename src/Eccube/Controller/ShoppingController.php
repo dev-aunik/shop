@@ -608,37 +608,17 @@ class ShoppingController extends AbstractShoppingController
 
             // メール送信
             log_info('[注文処理] 注文メールの送信を行います.', [$Order->getId()]);
-            // $item_category_ids = [];
-            // foreach ($Order['OrderItems']->toArray() as $key => $order_item) {
-            //     if (isset($order_item->toArray()['Product'])) {
-            //         if (isset($order_item->toArray()['Product']->toArray()['ProductCategories']) && isset($order_item->toArray()['Product']->toArray()['id'])) {
-            //             $item_categories = $order_item->toArray()['Product']->toArray()['ProductCategories']->toArray();
-
-            //             foreach ($item_categories as $key => $item_category) {
-            //                 if (isset($item_category->toArray()['category_id'])) {
-            //                     $item_category_id = $item_category->toArray()['category_id'];
-            //                     $item_category_ids[$order_item->toArray()['Product']->toArray()['id']] = $item_category_id;
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
-
             $order_details = [];
             foreach ($Order['OrderItems']->toArray() as $key => $order_item) {
                 if (isset($order_item->toArray()['Product'])) {
                     if (isset($order_item->toArray()['Product']->toArray()['ProductCategories']) && isset($order_item->toArray()['Product']->toArray()['id'])) {
                         $item_categories = $order_item->toArray()['Product']->toArray()['ProductCategories']->toArray();
-
                         foreach ($item_categories as $key => $item_category) {
-
                             if (isset($item_category->toArray()['category_id'])) {
                                 $item_category_id = $item_category->toArray()['category_id'];
                                 $price = $order_item->toArray()['price'];
                                 $quantity = $order_item->toArray()['quantity'];
-
                                 $payment = $order_item->toArray()['Order']['Payment']->toArray();
-
                                 $product_id = $order_item->toArray()['Product']->toArray()['id'];
                                 $order_detail = [
                                     'email' => $this->getUser()['email'],
@@ -650,7 +630,6 @@ class ShoppingController extends AbstractShoppingController
                                     'payment_id' => $payment['id'],
                                     'payment_date' => $payment['create_date'],
                                 ];
-
                                 array_push($order_details, $order_detail);
                             }
                         }
@@ -680,7 +659,6 @@ class ShoppingController extends AbstractShoppingController
 
                 $response = curl_exec($curl);
                 curl_close($curl);
-                // dd($response);
             }
 
 
