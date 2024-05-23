@@ -3,7 +3,7 @@
         'name' => 'ec-cube/ec-cube',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '9f87b2b779a8179dc86ca5ae04ff870c1288a8b1',
+        'reference' => '737ddd999973c38da7a4d0a6ea8c5a187a43d264',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -382,7 +382,7 @@
         'ec-cube/ec-cube' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '9f87b2b779a8179dc86ca5ae04ff870c1288a8b1',
+            'reference' => '737ddd999973c38da7a4d0a6ea8c5a187a43d264',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
