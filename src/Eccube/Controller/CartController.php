@@ -78,57 +78,6 @@ class CartController extends AbstractController
      */
     public function index(Request $request)
     {
-        $is_paid_user = false;
-        $is_hashigoru_user = false;
-        $Customer = $this->getUser();
-        if($Customer){
-            if(isset($Customer['email'])){
-                $email = $Customer['email'];
-                $curl = curl_init();
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => 'http://127.0.0.1:8000/api/active_email_exists',
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => '',
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 0,
-                    CURLOPT_FOLLOWLOCATION => true,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => 'POST',
-                    CURLOPT_POSTFIELDS => array('email' => $email),
-                ));
-                $response_email_exists = curl_exec($curl);
-                curl_close($curl);
-                $response_email_exists = json_decode($response_email_exists);
-                if($response_email_exists->success == true){
-                    if($response_email_exists->data->is_exists == true){
-                        $is_hashigoru_user = true;
-                    }
-                    if($response_email_exists->data->is_paid == true){
-                        $is_paid_user = true;
-                    }
-                }
-            }
-        }
-
-        $ticket_prices = [];
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'http://127.0.0.1:8000/api/ticket_prices',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-        $response_ticket_prices = curl_exec($curl);
-        curl_close($curl);
-        $response_ticket_prices = json_decode($response_ticket_prices);
-        if($response_ticket_prices->success == true){
-            $ticket_prices = $response_ticket_prices->data->ticket_prices;
-        }
-
         // カートを取得して明細の正規化を実行
         $Carts = $this->cartService->getCarts();
         $this->execPurchaseFlow($Carts);
@@ -159,6 +108,7 @@ class CartController extends AbstractController
                     $least[$Cart->getCartKey()] = $this->baseInfo->getDeliveryFreeAmount() - $Cart->getTotalPrice();
                 }
             }
+
             $totalPrice += $Cart->getTotalPrice();
             $totalQuantity += $Cart->getQuantity();
         }
@@ -174,9 +124,6 @@ class CartController extends AbstractController
             'least' => $least,
             'quantity' => $quantity,
             'is_delivery_free' => $isDeliveryFree,
-            'hashgoru_user' => $is_hashigoru_user,
-            'is_paid_user' => $is_paid_user,
-            'ticket_prices' => $ticket_prices,
         ];
     }
 
