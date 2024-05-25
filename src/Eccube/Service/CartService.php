@@ -362,7 +362,6 @@ class CartService
                 }
             }
         }
-
         $ticket_prices = [];
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -403,12 +402,16 @@ class CartService
 
         $price = $ProductClass->getPrice02IncTax();
         foreach($ticket_prices as $key=>$ticket_price){
-            if($ticket_price->shop_item_id == $ProductClass->getId()){
-                if($is_paid_user){
-                    $price =  $ticket_price->discount_price;
-                }
-                else{
-                    $price =  $ticket_price->regular_price;
+            if($ProductClass->getProduct()){
+                if(isset($ProductClass->getProduct()['id'])){
+                    if($ticket_price->shop_item_id == $ProductClass->getProduct()['id']){
+                        if($is_paid_user){
+                            $price =  $ticket_price->discount_price;
+                        }
+                        else{
+                            $price =  $ticket_price->regular_price;
+                        }
+                    }
                 }
             }
         }

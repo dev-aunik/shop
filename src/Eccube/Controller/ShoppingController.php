@@ -250,7 +250,7 @@ class ShoppingController extends AbstractShoppingController
 
             try {
                 // リダイレクト先のチェック.
-                $pattern = '/^'.preg_quote($request->getBasePath(), '/').'/';
+                $pattern = '/^' . preg_quote($request->getBasePath(), '/') . '/';
                 $redirectTo = preg_replace($pattern, '', $redirectTo);
                 $result = $router->match($redirectTo);
                 // パラメータのみ抽出
@@ -394,25 +394,26 @@ class ShoppingController extends AbstractShoppingController
      *
      * @Route("/robotpayment/excute", name="robotpayment_excute", methods={"POST"})
      */
-    public function robotPaymentExcute(Request $request){
+    public function robotPaymentExcute(Request $request)
+    {
         $token = $request->request->all()['tkn'];
         $total_amount = $request->request->all()['total_amount'];
-        if($token){
-            if($total_amount){
+        if ($token) {
+            if ($total_amount) {
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://credit.j-payment.co.jp/gateway/gateway_token.aspx',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'aid=127655&jb=CAPTURE&rt=1&cod=&tkn='.$token.'&em=&pn=&am='.$total_amount.'&tx=0&sf=0',
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/x-www-form-urlencoded'
-                ),
+                    CURLOPT_URL => 'https://credit.j-payment.co.jp/gateway/gateway_token.aspx',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'aid=127655&jb=CAPTURE&rt=1&cod=&tkn=' . $token . '&em=&pn=&am=' . $total_amount . '&tx=0&sf=0',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/x-www-form-urlencoded'
+                    ),
                 ));
                 $response = curl_exec($curl);
                 curl_close($curl);
@@ -422,8 +423,7 @@ class ShoppingController extends AbstractShoppingController
                         'response' => explode(',', $response),
                     ]
                 );
-            }
-            else{
+            } else {
                 return $this->json(
                     [
                         'success' => false,
@@ -431,8 +431,7 @@ class ShoppingController extends AbstractShoppingController
                     ]
                 );
             }
-        }
-        else{
+        } else {
             return $this->json(
                 [
                     'success' => false,
@@ -446,25 +445,26 @@ class ShoppingController extends AbstractShoppingController
      *
      * @Route("/robotpayment/excute/test", name="robotpayment_excute_test", methods={"POST"})
      */
-    public function robotPaymentExcuteTest(Request $request){
+    public function robotPaymentExcuteTest(Request $request)
+    {
         $token = $request->request->all()['tkn'];
         $total_amount = $request->request->all()['total_amount'];
-        if($token){
-            if($total_amount){
+        if ($token) {
+            if ($total_amount) {
                 $curl = curl_init();
                 curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://credit.j-payment.co.jp/gateway/gateway_token.aspx',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'aid=127655&jb=CAPTURE&rt=1&cod=&tkn='.$token.'&em=&pn=&am='.$total_amount.'&tx=0&sf=0',
-                CURLOPT_HTTPHEADER => array(
-                    'Content-Type: application/x-www-form-urlencoded'
-                ),
+                    CURLOPT_URL => 'https://credit.j-payment.co.jp/gateway/gateway_token.aspx',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'aid=127655&jb=CAPTURE&rt=1&cod=&tkn=' . $token . '&em=&pn=&am=' . $total_amount . '&tx=0&sf=0',
+                    CURLOPT_HTTPHEADER => array(
+                        'Content-Type: application/x-www-form-urlencoded'
+                    ),
                 ));
                 $response = curl_exec($curl);
                 curl_close($curl);
@@ -474,8 +474,7 @@ class ShoppingController extends AbstractShoppingController
                         'response' => explode(',', $response),
                     ]
                 );
-            }
-            else{
+            } else {
                 return $this->json(
                     [
                         'success' => false,
@@ -483,8 +482,7 @@ class ShoppingController extends AbstractShoppingController
                     ]
                 );
             }
-        }
-        else{
+        } else {
             return $this->json(
                 [
                     'success' => false,
@@ -610,48 +608,66 @@ class ShoppingController extends AbstractShoppingController
 
             // メール送信
             log_info('[注文処理] 注文メールの送信を行います.', [$Order->getId()]);
-            $item_category_ids = [];
-            foreach($Order['OrderItems']->toArray() as $key=>$order_item){
-                if(isset($order_item->toArray()['Product'])){
-                    if(isset($order_item->toArray()['Product']->toArray()['ProductCategories']) && isset($order_item->toArray()['Product']->toArray()['id'])){
+            $order_details = [];
+            foreach ($Order['OrderItems']->toArray() as $key => $order_item) {
+                if (isset($order_item->toArray()['Product'])) {
+                    if (isset($order_item->toArray()['Product']->toArray()['ProductCategories']) && isset($order_item->toArray()['Product']->toArray()['id'])) {
                         $item_categories = $order_item->toArray()['Product']->toArray()['ProductCategories']->toArray();
-
-                        foreach($item_categories as $key=>$item_category){
-                            if(isset($item_category->toArray()['category_id'])){
+                        foreach ($item_categories as $key => $item_category) {
+                            if (isset($item_category->toArray()['category_id'])) {
                                 $item_category_id = $item_category->toArray()['category_id'];
-                                $item_category_ids[$order_item->toArray()['Product']->toArray()['id']] = $item_category_id;
+                                $price = $order_item->toArray()['price'];
+                                $quantity = $order_item->toArray()['quantity'];
+                                $payment = $order_item->toArray()['Order']['Payment']->toArray();
+                                $product_id = $order_item->toArray()['Product']->toArray()['id'];
+                                $order_detail = [
+                                    'email' => $this->getUser()['email'],
+                                    'order_id' => $Order->getId(),
+                                    'shop_item_id' => $product_id,
+                                    'category_id' => $item_category_id,
+                                    'price' => $price * $quantity,
+                                    'quantity' => $quantity,
+                                    'payment_id' => $payment['id'],
+                                    'payment_date' => $payment['create_date'],
+                                ];
+                                array_push($order_details, $order_detail);
                             }
                         }
                     }
                 }
             }
 
-            foreach($item_category_ids as $key=>$item_category_id){
-                if($item_category_id == 1){
-                    if(isset($this->getUser()['email'])){
-                        $curl = curl_init();
-                        curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'http://127.0.0.1:8000/api/users_tickets/store',
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_ENCODING => '',
-                        CURLOPT_MAXREDIRS => 10,
-                        CURLOPT_TIMEOUT => 0,
-                        CURLOPT_FOLLOWLOCATION => true,
-                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                        CURLOPT_CUSTOMREQUEST => 'POST',
-                        CURLOPT_POSTFIELDS => array('email' => $this->getUser()['email'],'shop_item_id' => $key),
-                        ));
-                        $response = curl_exec($curl);
-                        curl_close($curl);
-                    }
-                }
+            $json_order_details = json_encode($order_details);
+
+            if (isset($this->getUser()['email'])) {
+                $curl = curl_init();
+                curl_setopt_array($curl, [
+                    CURLOPT_URL => 'http://127.0.0.1:8000/api/users_tickets/store',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => $json_order_details,
+                    CURLOPT_HTTPHEADER => [
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen($json_order_details),
+                    ],
+                ]);
+
+                $response = curl_exec($curl);
+                curl_close($curl);
             }
+
+
             $this->mailService->sendOrderMail($Order);
             $this->entityManager->flush();
 
             log_info('[注文処理] 注文処理が完了しました. 購入完了画面へ遷移します.', [$Order->getId()]);
 
-            if($request->request->all()['payment_status'] == 'paid'){
+            if ($request->request->all()['payment_status'] == 'paid') {
                 $orderStatusRepo = $this->entityManager->getRepository(\Eccube\Entity\Master\OrderStatus::class);
                 $Status = $orderStatusRepo->find(OrderStatus::PAID);
                 $this->orderRepository->changeStatus($Order->getId(), $Status);
@@ -1002,17 +1018,26 @@ class ShoppingController extends AbstractShoppingController
 
             // forwardすることも可能.
             if ($dispatcher->isForward()) {
-                log_info('[注文処理] PaymentMethod::applyによりForwardします.',
-                    [$dispatcher->getRoute(), $dispatcher->getPathParameters(), $dispatcher->getQueryParameters()]);
+                log_info(
+                    '[注文処理] PaymentMethod::applyによりForwardします.',
+                    [$dispatcher->getRoute(), $dispatcher->getPathParameters(), $dispatcher->getQueryParameters()]
+                );
 
-                return $this->forwardToRoute($dispatcher->getRoute(), $dispatcher->getPathParameters(),
-                    $dispatcher->getQueryParameters());
+                return $this->forwardToRoute(
+                    $dispatcher->getRoute(),
+                    $dispatcher->getPathParameters(),
+                    $dispatcher->getQueryParameters()
+                );
             } else {
-                log_info('[注文処理] PaymentMethod::applyによりリダイレクトします.',
-                    [$dispatcher->getRoute(), $dispatcher->getPathParameters(), $dispatcher->getQueryParameters()]);
+                log_info(
+                    '[注文処理] PaymentMethod::applyによりリダイレクトします.',
+                    [$dispatcher->getRoute(), $dispatcher->getPathParameters(), $dispatcher->getQueryParameters()]
+                );
 
-                return $this->redirectToRoute($dispatcher->getRoute(),
-                    array_merge($dispatcher->getPathParameters(), $dispatcher->getQueryParameters()));
+                return $this->redirectToRoute(
+                    $dispatcher->getRoute(),
+                    array_merge($dispatcher->getPathParameters(), $dispatcher->getQueryParameters())
+                );
             }
         }
     }

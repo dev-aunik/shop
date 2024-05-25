@@ -620,8 +620,8 @@ class ComposerStaticInitd456c4252bb931b7565c93417eedfd05
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -801,9 +801,9 @@ class ComposerStaticInitd456c4252bb931b7565c93417eedfd05
         ),
         'Doctrine\\Common\\' => 
         array (
-            0 => __DIR__ . '/..' . '/doctrine/event-manager/src',
-            1 => __DIR__ . '/..' . '/doctrine/persistence/src/Common',
-            2 => __DIR__ . '/..' . '/doctrine/common/src',
+            0 => __DIR__ . '/..' . '/doctrine/common/src',
+            1 => __DIR__ . '/..' . '/doctrine/event-manager/src',
+            2 => __DIR__ . '/..' . '/doctrine/persistence/src/Common',
         ),
         'Doctrine\\Bundle\\MigrationsBundle\\' => 
         array (
@@ -871,9 +871,9 @@ class ComposerStaticInitd456c4252bb931b7565c93417eedfd05
         ),
         'Codeception\\' => 
         array (
-            0 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
-            1 => __DIR__ . '/..' . '/codeception/stub/src',
-            2 => __DIR__ . '/..' . '/captbaritone/mailcatcher-codeception-module/src',
+            0 => __DIR__ . '/..' . '/captbaritone/mailcatcher-codeception-module/src',
+            1 => __DIR__ . '/..' . '/codeception/codeception/src/Codeception',
+            2 => __DIR__ . '/..' . '/codeception/stub/src',
         ),
         'Clue\\React\\NDJson\\' => 
         array (
