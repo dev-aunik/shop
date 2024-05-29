@@ -1,0 +1,26 @@
+/* カスタマイズ用CSS */
+.line-clamp-1{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+}
+.bg-light-custom{
+      background: #F8F8F8;
+}
+
+.ec-shelfGrid .ec-shelfGrid__item-image{
+    aspect-ratio: 2 / 1;
+    background-color: #F8F8F8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ec-shelfGrid__item a p:nth-child(2) {
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis; 
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+}

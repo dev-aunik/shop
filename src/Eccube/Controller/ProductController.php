@@ -175,6 +175,28 @@ class ProductController extends AbstractController
             }
         }
 
+        $products_for = [];
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://127.0.0.1:8000/api/product_for',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+        $response_products_for = curl_exec($curl);
+        curl_close($curl);
+        $response_products_for = json_decode($response_products_for);
+        if($response_products_for){
+            if($response_products_for->success == true){
+                $products_for = $response_products_for->data->products_for;
+            }
+        }
+
+
 
         // Doctrine SQLFilter
         if ($this->BaseInfo->isOptionNostockHidden()) {
@@ -266,6 +288,7 @@ class ProductController extends AbstractController
             'hashgoru_user' => $is_hashigoru_user,
             'is_paid_user' => $is_paid_user,
             'ticket_prices' => $ticket_prices,
+            'products_for' => $products_for,
         ];
     }
 
@@ -374,6 +397,27 @@ class ProductController extends AbstractController
             }
         }
 
+        $products_for = [];
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://127.0.0.1:8000/api/product_for',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+        $response_products_for = curl_exec($curl);
+        curl_close($curl);
+        $response_products_for = json_decode($response_products_for);
+        if($response_products_for){
+            if($response_products_for->success == true){
+                $products_for = $response_products_for->data->products_for;
+            }
+        }
+
         if (!$this->checkVisibility($Product)) {
             throw new NotFoundHttpException();
         }
@@ -412,6 +456,7 @@ class ProductController extends AbstractController
             'hashgoru_user' => $is_hashigoru_user,
             'is_paid_user' => $is_paid_user,
             'ticket_prices' => $ticket_prices,
+            'products_for' => $products_for,
         ];
     }
 

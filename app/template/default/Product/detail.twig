@@ -322,6 +322,8 @@ file that was distributed with this source code.
                     </ul>
                     {# 通常価格 #}
                     {% set categoryFound = false %}
+                    {% set product_for_paid = false %}
+                    {% set paid_user_usage_status = '0' %}
                     {% set regular_price = null %}
                     {% set discount_price = null %}
                     {% if Product.ProductCategories is not empty %}
@@ -336,8 +338,18 @@ file that was distributed with this source code.
                     {% if ticket_prices is not empty %}
                         {% for ticket_price in ticket_prices %}
                             {% if Product.id == ticket_price.shop_item_id %}
+                                {% set paid_user_usage_status = ticket_price.paid_user_usage_status %}
                                 {% set regular_price = ticket_price.regular_price %}
                                 {% set discount_price = ticket_price.discount_price %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    {% if products_for is not empty %}
+                        {% for product_for in products_for %}
+                            {% if Product.id == product_for.shop_item_id %}
+                                {% if product_for.for == 'PAID_USER' %}
+                                    {% set product_for_paid = true %}
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% endif %}
@@ -524,18 +536,64 @@ file that was distributed with this source code.
                             </div>
                             {% if categoryFound %}
                                 {% if hashgoru_user %}
-                                    <div class="ec-productRole__btn">
-                                        <button type="submit" class="ec-blockBtn--action add-cart">
-                                            {{ 'front.product.add_cart'|trans }}
-                                        </button>
-                                    </div>
+                                    {% if is_paid_user %}
+                                        <div class="ec-productRole__btn">
+                                            <button type="submit" class="ec-blockBtn--action add-cart">
+                                                {{ 'front.product.add_cart'|trans }}
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        {% if paid_user_usage_status == '1' %}
+                                            <div class="ec-productRole__btn">
+                                                <button type="button" class="ec-blockBtn--action add-cart" disabled>
+                                                    {{ 'ハシゴる有料会員用' }} 
+                                                </button>
+                                            </div>
+                                        {% else %}
+                                            <div class="ec-productRole__btn">
+                                                <button type="submit" class="ec-blockBtn--action add-cart">
+                                                    {{ 'front.product.add_cart'|trans }}
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if paid_user_usage_status == '1' %}
+                                         <div class="ec-productRole__btn">
+                                            <button type="button" class="ec-blockBtn--action add-cart" disabled>
+                                                {{ 'ハシゴる有料会員用' }} 
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        <div class="ec-productRole__btn">
+                                            <button type="button" class="ec-blockBtn--action add-cart" disabled>
+                                                {{ 'ハシゴる会員用' }}
+                                            </button>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                             {% else %}
-                                <div class="ec-productRole__btn">
-                                    <button type="submit" class="ec-blockBtn--action add-cart">
-                                        {{ 'front.product.add_cart'|trans }}
-                                    </button>
-                                </div>
+                                {% if product_for_paid == true %}
+                                    {% if is_paid_user %}
+                                        <div class="ec-productRole__btn">
+                                            <button type="submit" class="ec-blockBtn--action add-cart">
+                                                {{ 'front.product.add_cart'|trans }}
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        <div class="ec-productRole__btn">
+                                            <button type="submit" class="ec-blockBtn--action add-cart" disabled>
+                                                {{ 'ハシゴる有料会員用' }}
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                        <div class="ec-productRole__btn">
+                                            <button type="submit" class="ec-blockBtn--action add-cart">
+                                                {{ 'front.product.add_cart'|trans }}
+                                            </button>
+                                        </div>
+                                {% endif %}
                             {% endif %}
                         {% else %}
                             <div class="ec-productRole__btn">

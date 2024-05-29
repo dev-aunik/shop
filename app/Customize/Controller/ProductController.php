@@ -280,6 +280,7 @@ class ProductController extends AbstractController
             $categoryId = $request->get('category_id', null);
             $productCode = $request->get('product_code', null);
             $statusId = $request->get('status_id', 1);
+            $saleLimit = $request->get('saleLimit', 1);
             $saleType = $this->saleTypeRepository->find($saleTypeId);
             $category = $this->categoryRepository->find($categoryId);
             $status = $this->entityManager->getRepository(ProductStatus::class)->find($statusId);
@@ -325,7 +326,7 @@ class ProductController extends AbstractController
             $productClass->setSaleType($saleType);
             $productClass->setPrice02($sellingPrice);
             $productClass->setStock($qtyInStock);
-            $productClass->setSaleLimit(1);
+            $productClass->setSaleLimit($saleLimit);
             $productClass->setCode($productCode);
 
             $this->entityManager->persist($productClass);
@@ -400,7 +401,47 @@ class ProductController extends AbstractController
         $sellingPrice = $request->get('selling_price');
         $productImages = $request->files->all('product_images');
 
+        $categoryId = $request->get('category_id');
+        $statusId = $request->get('status_id');
+        $saleLimit = $request->get('saleLimit');
+
         try {
+            if($categoryId){
+                $queryBuilder = $this->connection()->createQueryBuilder();
+                $queryBuilder
+                    ->update('dtb_product_category')
+                    ->set('category_id', ':categoryId')
+                    ->where('product_id = :id')
+                    ->setParameter('categoryId', $categoryId)
+                    ->setParameter('id', $id);
+
+                $queryBuilder->execute();
+            }
+
+            if($statusId){
+                $queryBuilder = $this->connection()->createQueryBuilder();
+                $queryBuilder
+                    ->update('dtb_product')
+                    ->set('product_status_id', ':statusId')
+                    ->where('id = :id')
+                    ->setParameter('statusId', $statusId)
+                    ->setParameter('id', $id);
+
+                $queryBuilder->execute();
+            }
+
+            if($saleLimit){
+                $queryBuilder = $this->connection()->createQueryBuilder();
+                $queryBuilder
+                    ->update('dtb_product_class')
+                    ->set('sale_limit', ':saleLimit')
+                    ->where('product_id = :id')
+                    ->setParameter('saleLimit', $saleLimit)
+                    ->setParameter('id', $id);
+
+                $queryBuilder->execute();
+            }
+
             $queryBuilder = $this->connection()->createQueryBuilder();
             $queryBuilder
                 ->update('dtb_product')
