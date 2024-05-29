@@ -12,7 +12,7 @@ trait DatabaseConnectionController
             'dbname' => 'shop',
             'user' => 'root',
             'password' => '',
-            'port' => '3306',
+            'port' => '3307',
             'host' => 'localhost',
             'driver' => 'pdo_mysql',
         ];
