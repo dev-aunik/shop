@@ -15,40 +15,47 @@ file that was distributed with this source code.
     <script type="text/javascript" src="https://credit.j-payment.co.jp/gateway/js/CPToken.js"></script>
     <script>
     function execPurchase(resultCode, errMsg) {
-      $('#js_check_msg_area').hide();
-      if (resultCode != "Success") {
-        window.alert(errMsg);
-      } else {
-          $.ajax({
-              type: "POST",
-              url: "{{ url('robotpayment_excute') }}",
-              data: {
-                    tkn: $('#tkn').val(),
-                    total_amount: `{{ Order.payment_total }}`,
-              },
-              success: function (response) {
-                  console.log(response);
-                  if(response.success){
-                      if(response.response[2]){
-                        $('#payment_status').val('paid');
-                        $('#shopping-form').submit();
-                      }
-                      else{
-                          $('#js_check_msg_area').html(`Some thing went wrong from api gateway`);
-                          $('#js_check_msg_area').show();
-                      }
-                  }
-                  else{
-                    $('#js_check_msg_area').html(response.message);
-                      $('#js_check_msg_area').show();
-                  }
-              },
-              error: function (response) {
-                $('#js_check_msg_area').html(`Backend not returning values`);
-                $('#js_check_msg_area').show();
-              }
-          });
-      }
+
+        if (resultCode == "Success") {
+            $.ajax({
+                type: "POST",
+                url: "{{ url('robotpayment_excute') }}",
+                data: {
+                        tkn: $('#tkn').val(),
+                        total_amount: `{{ Order.payment_total }}`,
+                },
+                success: function (response) {
+                    if (response.success === true) {
+                        var parts = response.data.split(',');
+                        if (parts.every(part => !part.includes("ER") && !part.includes("G"))) {
+                            var parts_last = parts[0].trim();
+                            var payment_id = null;
+                            if (parts_last !== '0') {
+                                payment_id = parts_last;
+                            }
+                            $('#payment_status').val('paid');
+                            $('#payment_id').val(payment_id);
+                            $('#shopping-form').submit();
+                        }
+                        else if (parts.some(part => part.includes("ER900")) || parts.some(part => part.includes("ER901"))) {
+                            window.alert(`Your card is not complying 3D secure. Please contact with your card company.`);
+                        } 
+                        else if (parts.some(part => part.includes("ER999"))) {
+                            window.alert(`Please come back again after a while and start from the purchasing step.`);
+                        }
+                        else if (parts.some(part => part.includes("ER010"))) {
+                            window.alert(`Please come back again after a while and start from the purchasing step.`);
+                        } 
+                        else if (parts.some(part => part.includes("ER013")) || parts.some(part => part.includes("ER014")) || parts.some(part => part.includes("ER015"))) {
+                            window.alert(`Please check your card number once again or you can try with other card. Thank you!`);
+                        }
+                        else if (parts.some(part => part.includes("G"))) {
+                            window.alert(`Please contact with your card company.`);
+                        }
+                    }
+                }
+            });
+        }
     }
     function doPurchase() {
       CPToken.CardInfo(
@@ -112,6 +119,7 @@ file that was distributed with this source code.
     <form id="shopping-form" method="post" action="{{ url('shopping_checkout') }}">
     {{ form_widget(form._token) }}
     <input type="hidden" id="payment_status" name="payment_status"></input>
+    <input type="hidden" id="payment_id" name="payment_id"></input>
     <div class="ec-orderRole">
         <div class="ec-orderRole__detail">
             <div class="ec-orderAccount">

@@ -2,12 +2,11 @@ monolog:
     handlers:
         buffered:
             type:     buffer
-            handler:  easylog
+            handler:  'null_handler'
             channels: ["!event"]
             level:    debug
-        easylog:
-            type: service
-            id:   easycorp.easylog.handler
+        'null_handler':
+            type: 'null'
         console:
             type: console
             process_psr_3_messages: false
@@ -18,4 +17,4 @@ services:
         class: EasyCorp\EasyLog\EasyLogHandler
         public: false
         arguments:
-            - '%kernel.logs_dir%/%kernel.environment%/site.log'
+            - '/dev/null'  # This can be left as it won't be used with null handler

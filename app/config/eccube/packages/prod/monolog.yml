@@ -10,37 +10,19 @@ monolog:
             type: fingers_crossed
             action_level: error
             passthru_level: info
-            handler: main_rotating_file
-        main_rotating_file:
-            type: rotating_file
-            max_files: 60
-            path: '%kernel.logs_dir%/%kernel.environment%/site.log'
-            formatter: eccube.log.formatter.line
-            level: debug
+            handler: blackhole
         front:
             type: fingers_crossed
             action_level: error
             passthru_level: info
-            handler: front_rotating_file
+            handler: blackhole
             channels: ['front', 'app', 'php']
-        front_rotating_file:
-            type: rotating_file
-            max_files: 60
-            path: '%kernel.logs_dir%/%kernel.environment%/front.log'
-            formatter: eccube.log.formatter.line
-            level: debug
         admin:
             type: fingers_crossed
             action_level: error
             passthru_level: info
-            handler: admin_rotating_file
+            handler: blackhole
             channels: ['admin', 'app', 'php']
-        admin_rotating_file:
-            type: rotating_file
-            max_files: 60
-            path: '%kernel.logs_dir%/%kernel.environment%/admin.log'
-            formatter: eccube.log.formatter.line
-            level: debug
         console:
             type: console
             process_psr_3_messages: false
@@ -48,3 +30,6 @@ monolog:
         # keep this last
         blackhole:
             type: "null"
+
+# Remove the definitions of rotating file handlers as they are not used anymore
+# main_rotating_file, front_rotating_file, and admin_rotating_file removed

@@ -415,29 +415,17 @@ class ShoppingController extends AbstractShoppingController
                         'Content-Type: application/x-www-form-urlencoded'
                     ),
                 ));
-                $response = curl_exec($curl);
+                $response_api = curl_exec($curl);
                 curl_close($curl);
-                return $this->json(
-                    [
-                        'success' => true,
-                        'response' => explode(',', $response),
-                    ]
-                );
-            } else {
-                return $this->json(
-                    [
-                        'success' => false,
-                        'message' => 'Total amount not initialized',
-                    ]
-                );
+
+                $response = [
+                    'success' => true,
+                    'data' => $response_api,
+                    'message' => 'Payment Successfull',
+                ];
+
+                return $this->json($response, 200);
             }
-        } else {
-            return $this->json(
-                [
-                    'success' => false,
-                    'message' => 'Token not found',
-                ]
-            );
         }
     }
 
@@ -629,6 +617,7 @@ class ShoppingController extends AbstractShoppingController
                                     'quantity' => $quantity,
                                     'payment_id' => $payment['id'],
                                     'payment_date' => $payment['create_date'],
+                                    'gateway_payment_id' => $request->request->all()['payment_id'],
                                 ];
                                 array_push($order_details, $order_detail);
                             }
