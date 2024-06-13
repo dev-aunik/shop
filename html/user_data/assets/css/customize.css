@@ -24,3 +24,13 @@
     overflow: hidden;
     -webkit-line-clamp: 1;
 }
+
+.disabled-add-to-cart{
+    cursor: not-allowed;
+    filter: alpha(opacity = 65);
+    opacity: 0.65;
+}
+
+.cart-quantity-hidden{
+    display: none;
+}

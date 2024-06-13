@@ -397,6 +397,7 @@ class ProductController extends AbstractController
             }
         }
 
+
         $products_for = [];
         $curl = curl_init();
         curl_setopt_array($curl, array(
