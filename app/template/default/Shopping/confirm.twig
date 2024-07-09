@@ -13,9 +13,32 @@ file that was distributed with this source code.
 {% form_theme form 'Form/form_div_layout.twig' %}
 {% block javascript %}
     <script type="text/javascript" src="https://credit.j-payment.co.jp/gateway/js/CPToken.js"></script>
+    <script type="text/javascript" src="https://credit.j-payment.co.jp/gateway/js/EMV3DSAdapter.js"></script>
     <script>
+    function doPurchase() {
+      CPToken.CardInfo(
+          {
+            aid: '128837',
+          },
+          execAuth
+       );
+    }
+    
+    function execAuth(resultCode, errMsg) {
+        if (resultCode != "Success") {
+            window.alert(errMsg);
+        } else {
+            ThreeDSAdapter.authenticate({
+                tkn: $('#tkn').val(),
+                aid: '128837',
+                am: `{{ Order.payment_total }}`,
+                tx: 0,
+                sf: 0,
+            }, execPurchase);
+        }
+    }
+    
     function execPurchase(resultCode, errMsg) {
-
         if (resultCode == "Success") {
             $.ajax({
                 type: "POST",
@@ -38,32 +61,24 @@ file that was distributed with this source code.
                             $('#shopping-form').submit();
                         }
                         else if (parts.some(part => part.includes("ER900")) || parts.some(part => part.includes("ER901"))) {
-                            window.alert(`Your card is not complying 3D secure. Please contact with your card company.`);
+                            window.alert(`ご利用されたカードが ３Dセキュアに対応しているかを ご確認ください。`);
                         } 
                         else if (parts.some(part => part.includes("ER999"))) {
-                            window.alert(`Please come back again after a while and start from the purchasing step.`);
+                            window.alert(`しばらく時間が経過してから 再度、購入画面から決済処理を 行ってください。`);
                         }
                         else if (parts.some(part => part.includes("ER010"))) {
-                            window.alert(`Please come back again after a while and start from the purchasing step.`);
+                            window.alert(`しばらく時間が経過してから 再度、購入画面から決済処理を 行ってください。`);
                         } 
                         else if (parts.some(part => part.includes("ER013")) || parts.some(part => part.includes("ER014")) || parts.some(part => part.includes("ER015"))) {
-                            window.alert(`Please check your card number once again or you can try with other card. Thank you!`);
+                            window.alert(`恐れ入りますが、カード番号を 再度、確認の上入力もしくは別のカードで支払処理の程よろしくお願いします。`);
                         }
                         else if (parts.some(part => part.includes("G"))) {
-                            window.alert(`Please contact with your card company.`);
+                            window.alert(`恐れ入りますが、ご利用のカード会社へお問い合わせください。`);
                         }
                     }
                 }
             });
         }
-    }
-    function doPurchase() {
-      CPToken.CardInfo(
-          {
-            aid: '127655',
-          },
-          execPurchase
-       );
     }
     </script>
     
@@ -294,6 +309,7 @@ file that was distributed with this source code.
 </form>
 <form id="mainform">
   	<input id="tkn" name="tkn" type="hidden" value="">
+  	<div id="EMV3DS_INPUT_FORM"></div>
+    <div id="CARD_INPUT_FORM" class="text-dark"></div>
 </form>
-<div id="CARD_INPUT_FORM" class="text-dark"></div>
 {% endblock %}
