@@ -166,6 +166,42 @@ class EntryController extends AbstractController
                     );
 
                 case 'complete':
+                    $prefecture_id = null;
+                    if($Customer->getPref()){
+                        if(isset($Customer->getPref()['id'])){
+                            $prefecture_id = $Customer->getPref()['id'];
+                        }
+                    }
+
+                    $userData = array(
+                        'email' => $Customer->getEmail() ?? null,
+                        'password' => $Customer->getPlainPassword() ?? null,
+                        'first_name' => $Customer->getName02() ?? null,
+                        'last_name' => $Customer->getName01() ?? null,
+                        'first_name_kana' => $Customer->getKana02() ?? null,
+                        'last_name_kana' => $Customer->getKana01() ?? null,
+                        'mobile' => $Customer->getPhoneNumber() ?? null,
+                        'postal_code' => $Customer->getPostalCode() ?? null,
+                        'prefecture' => $prefecture_id,
+                        'address_one' => $Customer->getAddr01() ?? null,
+                        'address_two' => $Customer->getAddr02() ?? null
+                    );
+
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'http://127.0.0.1:8000/api/user-registration-shop',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => '',
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 0,
+                        CURLOPT_FOLLOWLOCATION => true,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => 'POST',
+                        CURLOPT_POSTFIELDS => $userData,
+                    ));
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+
                     log_info('会員登録開始');
 
                     $encoder = $this->encoderFactory->getEncoder($Customer);
@@ -308,6 +344,25 @@ class EntryController extends AbstractController
             $request
         );
         $this->eventDispatcher->dispatch($event, EccubeEvents::FRONT_ENTRY_ACTIVATE_COMPLETE);
+
+        $userData = array(
+            'email' => $Customer->getEmail() ?? null,
+        );
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://127.0.0.1:8000/api/user-registration-shop/active',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $userData,
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
 
         // メール送信
         $this->mailService->sendCustomerCompleteMail($Customer);
